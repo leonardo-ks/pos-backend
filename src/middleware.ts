@@ -12,7 +12,7 @@ function withCors(response: NextResponse) {
   response.headers.set("Access-Control-Allow-Origin", "*");
   response.headers.set(
     "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, OPTIONS",
+    "GET, POST, PATCH, DELETE, OPTIONS",
   );
   response.headers.set(
     "Access-Control-Allow-Headers",

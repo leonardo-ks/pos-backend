@@ -86,3 +86,42 @@ npm run seed:auth
 npm run seed:large
 npm run perf:explain
 ```
+
+## Vercel Deployment
+
+The repository includes `.github/workflows/deploy-vercel.yml` for configurable
+Vercel deployments.
+
+Required GitHub secrets:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+- `DATABASE_URL`
+- `BETTER_AUTH_URL`
+
+Required Vercel environment variables:
+
+- `DATABASE_URL`
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_URL=https://<backend-production-domain>`
+- `TRUSTED_ORIGINS=https://<frontend-production-domain>`
+
+`TRUSTED_ORIGINS` accepts a comma-separated list of frontend origins and is
+merged with localhost/emulator development origins.
+
+The workflow runs automatically on pushes to `main` as a preview deployment.
+Manual runs support these inputs:
+
+- `target`: `preview` or `production`
+- `run_migrations`: run `npm run db:migrate` after deployment
+- `seed_auth`: run `npm run seed:auth` after deployment
+- `seed_demo`: run `npm run seed:demo` after deployment
+
+Recommended first production run:
+
+1. Deploy with `target=production`.
+2. Re-run with `run_migrations=true` after confirming the production database
+   connection.
+3. Re-run with `seed_auth=true` to create demo login users.
+4. Run `seed_demo=true` only when demo/sample business data is desired.
