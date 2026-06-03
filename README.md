@@ -99,6 +99,7 @@ on GitHub environments named `production` and `preview`:
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
 - `DATABASE_URL`
+- `BETTER_AUTH_SECRET`
 - `BETTER_AUTH_URL`
 
 Required Vercel environment variables:

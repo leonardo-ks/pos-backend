@@ -39,6 +39,7 @@ jobs:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       DEPLOY_TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || 'preview' }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
       BETTER_AUTH_URL: ${{ secrets.BETTER_AUTH_URL }}
 
     steps:
@@ -56,6 +57,15 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Validate deployment secrets
+        run: |
+          test -n "${{ secrets.VERCEL_TOKEN }}"
+          test -n "$VERCEL_ORG_ID"
+          test -n "$VERCEL_PROJECT_ID"
+          test -n "$DATABASE_URL"
+          test -n "$BETTER_AUTH_SECRET"
+          test -n "$BETTER_AUTH_URL"
 
       - name: Pull Vercel environment
         run: npx vercel@latest pull --yes --environment=${{ env.DEPLOY_TARGET }} --token=${{ secrets.VERCEL_TOKEN }}
