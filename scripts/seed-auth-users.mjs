@@ -31,6 +31,8 @@ const users = [
   },
 ];
 
+await ensureAppUsersSchema();
+
 for (const user of users) {
   const existing = await pool.query('SELECT id FROM "user" WHERE email = $1', [
     user.email,
@@ -90,3 +92,40 @@ for (const user of users) {
 
 await pool.end();
 console.log("Seeded Better Auth demo users.");
+
+async function ensureAppUsersSchema() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      auth_user_id TEXT,
+      nama TEXT NOT NULL DEFAULT 'User',
+      email TEXT,
+      username TEXT,
+      role TEXT NOT NULL DEFAULT 'kasir',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await pool.query(`
+    ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS auth_user_id TEXT,
+      ADD COLUMN IF NOT EXISTS nama TEXT NOT NULL DEFAULT 'User',
+      ADD COLUMN IF NOT EXISTS email TEXT,
+      ADD COLUMN IF NOT EXISTS username TEXT,
+      ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'kasir',
+      ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  `);
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_users_auth_user_id_unique
+      ON users(auth_user_id)
+  `);
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email_unique
+      ON users(email)
+  `);
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username_unique
+      ON users(username)
+  `);
+}
