@@ -92,7 +92,8 @@ npm run perf:explain
 The repository includes `.github/workflows/deploy-vercel.yml` for configurable
 Vercel deployments.
 
-Required GitHub secrets:
+Required GitHub secrets, either as repository secrets or as environment secrets
+on GitHub environments named `production` and `preview`:
 
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
